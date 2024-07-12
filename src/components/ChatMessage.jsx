@@ -1,5 +1,5 @@
 
-function ChatMessage({avatar, name, message, alignment}) {
+function ChatMessage({avatar, message, alignment}) {
     return (<>
     
         <div className={`flex font-mono p-2 w-full ${alignment===1?'justify-end':'justify-start'} px-4 `}>

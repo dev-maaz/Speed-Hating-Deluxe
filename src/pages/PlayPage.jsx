@@ -8,9 +8,8 @@ import {
 } from "playroomkit";
 import { useEffect, useState } from "react";
 import ChatMessage from "../components/ChatMessage";
-import { AnimatePresence } from "framer-motion";
 import PromptDisplay from "../components/PromptDisplay";
-
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function PlayPage() {
 
@@ -18,22 +17,52 @@ function PlayPage() {
   const [input, setInput] = useState("");
   const [localScore, setLocalScore] = useState(0);
 
+
   const [isLoading, setIsLoading] = useState(true);
 
-  const insults = ["no one asked", "dont care", "womp", "xD", "smooth brain", "didnt ask", "rekt", "stupid", "dumb", "braincell", "i am intellectual", "complexities", "amateur", "sad", "wrong","hopeless", "embarassing", "infuriating"]
+  // Keywords to check within text messages
+  const insults = [
 
+    "no one asked",
+    "dont care",
+    "womp",
+    "xD",
+    "smooth brain",
+    "didnt ask",
+    "rekt",
+    "stupid",
+    "dumb",
+    "braincell",
+    "i am an intellectual",
+    "complexities",
+    "amateur",
+    "sad",
+    "wrong",
+    "hopeless",
+    "embarassing",
+    "infuriating"
+  ];
+
+  // Custom avatars 
   const avatars = [
-    "Angrygnome.jfif",
-    "pfp-1.jfif",
-    "pfp-2.png",
-    "pfp-3.png",
-    "pfp-4.jfif",
-    "pfp-5.jfif",
+
+    "avatar-1.jpg",
+    "avatar-2.jfif",
+    "avatar-3.jpg",
+    "avatar-4.jfif",
+    "avatar-5.jfif",
+    "avatar-6.jfif",
+    "avatar-7.jfif",
+    "avatar-8.jfif",
+    "avatar-9.jfif",
+    "avatar-10.jfif"
   ];
 
   const maxPlayersPerRoom = 2;
 
+  // Lobby creation and game launch
   const lobbyLaunch = async () => {
+
     await insertCoin({
       avatars,
       maxPlayersPerRoom,
@@ -43,15 +72,21 @@ function PlayPage() {
     
     setIsLoading(false);
     player && player.setState("score", 0);
+    
+
   };
+
 
   useEffect(() => {
     lobbyLaunch();
   });
 
+  // Retrieving player's name and avatar
   try {
 
     var playerAvatar = myPlayer().getProfile().photo;
+    var playerName = myPlayer().getProfile().name;
+
     
   } catch (error) {
     
@@ -77,7 +112,7 @@ function PlayPage() {
 
         const messageDetails = {
           message: currentInput,
-          name: myPlayer().getProfile().name,
+          name: myPlayer().getProfile().id,
           avatar: myPlayer().getProfile().photo,
       };
 
@@ -89,28 +124,37 @@ function PlayPage() {
 
   if (isLoading) {
     return (
-      <div className="flex font-mono text-slate-100 bg-neutral-950 justify-center items-center h-screen w-screen">
+
+      <div className="flex flex-col font-mono text-slate-100 bg-neutral-950 justify-center items-center h-screen w-screen">
+        <LoadingSpinner />
         Loading...
       </div>
+
+    
     );
   }
 
 
   return (
     <>
+      
       <div className="flex font-mono text-slate-100 bg-neutral-950 justify-center items-center h-screen w-screen flex-col">
-            <div className="flex p-4 text-2xl h-16 w-full justify-center"> Score:{localScore}  </div>
-            <PromptDisplay />
 
-        <div className="flex justify-center items-center"></div>
+        <div className="flex p-4 text-xl w-full justify-around "> 
+          <img className="h-12 rounded-full" src={playerAvatar} alt="avatar" /> 
+            Score: {localScore} 
+          <img className="h-12 rounded-full scale-x-[-1]" src={playerAvatar} alt="avatar" /> 
+        </div>
+        
+        <PromptDisplay />
+
         <div className="flex flex-col h-4/5 w-4/5 p-4 border-2 border-slate-100 rounded-2xl">
           {messages.slice(-8).map((msg, i) => {
             return (
               <ChatMessage
                 avatar={msg.avatar}
-                name={msg.name}
                 message={msg.message}
-                alignment={myPlayer().getProfile().name === msg.name ? 1 : 0}
+                alignment={myPlayer().getProfile().id === msg.id ? 1 : 0}
               />
             );
           })}
@@ -124,7 +168,9 @@ function PlayPage() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
         />
+
       </div>
+
     </>
   );
 }

@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
+import CanvasBackground from "../components/CanvasBackground";
+
 
 function HomePage() {
   return (
     <>
-      <div className="flex w-screen h-screen justify-center items-center flex-col bg-neutral-950 text-slate-100 font-mono gap-2">
+      <CanvasBackground />
+      <div className="flex w-screen h-screen justify-center items-center flex-col text-slate-100 font-mono gap-2 z-10">
         <div className="p-4 flex flex-col items-center ">
           <h1 className=" rubik-mono-one-regular text-8xl flex items-center gap-4 hover:scale-110">
             Speed <span className="material-symbols-outlined">bolt</span>
